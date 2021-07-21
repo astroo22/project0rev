@@ -26,23 +26,16 @@ public class Account {
     }
     public Account(int balance, int accountId) {
     	this.balance = balance;
-    	this.accId = accountId;
+    	this.accId = new Random().nextInt(9999999) + 1000000;
     	this.accountNumber = 100000000 + new Random().nextInt(900000000);
+    	System.out.println("This is your accId for wire transfers so please write this down: " + accId);
     }
     public Account(int accountId, double balance, int accNum) {
     	this.accId = accountId;
     	this.balance = balance;
     	this.accountNumber = accNum;
     }
-    /*
-    public User getOwner() {
-		return owner;
-	}
-
-	public void setOwner(User owner) {
-		this.owner = owner;
-	}*/
-
+   
 	public int getAccId() {
 		return accId;
 	}

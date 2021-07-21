@@ -1,6 +1,9 @@
 package services;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
 
 import dao.UserDao;
@@ -22,6 +25,21 @@ public class UserServices {
 		this.uDao = u;
 		
 	}
+	public void printMenuCustomer() {
+		System.out.println("What would you like to do?");
+		System.out.println("- Request a (new) bank account?");
+		System.out.println("- (view) balance.");
+		System.out.println("- (manage) funds.");
+		System.out.println("- (transfer) funds.");
+		System.out.println("- (accept) money.");
+	}
+	public void printMenuEmployee() {
+		System.out.println("What would you like to do?");
+		System.out.println("- (viewt) to view transactions");
+		System.out.println("- (viewc) to view customers");
+		System.out.println("- (viewa) to view accounts");
+	}
+	/*
 	public User grabInfo() {
 		Scanner scan = new Scanner(System.in);
 		System.out.print("Please enter you first name: ");
@@ -36,11 +54,13 @@ public class UserServices {
 		scan.close();
 		return u;
 		
-	}
+	}*/
 	public void addAccount(User u, Account a) {
 		u.getAccounts().add(a);
 		a.setAccId(u.getAccKey());
 	}
+	
+	/*
 	public login grabLogin() {
 		Scanner scan = new Scanner(System.in);
 		System.out.println("Please enter your username: ");
@@ -50,7 +70,7 @@ public class UserServices {
 		login u = new login(username,password);
 		scan.close();
 		return u;
-	}
+	}*/
 	
 	public User signUp(String first, String last, String email, String password) throws UserNameAlreadyExistsException{
 		User u = new User(first, last, email, password);

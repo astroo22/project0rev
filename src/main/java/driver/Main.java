@@ -1,6 +1,5 @@
 package driver;
 
-
 import java.io.*;
 import java.io.IOException;
 import java.util.*;
@@ -34,6 +33,10 @@ public class Main {
 		boolean employee = false;
 		boolean manager = false;
 
+		// --vars for password username etc
+		String username = "";
+		String password = "";
+
 		System.out.println("Are you a customer, employee or manager?");
 		input = scan.nextLine();
 		if (input != null) {
@@ -43,9 +46,14 @@ public class Main {
 				input = scan.nextLine();
 				switch (input.toLowerCase()) {
 				case "login":
-					l = uServ.grabLogin();
+
+					// l = uServ.grabLogin();
+					System.out.println("Please enter your username: ");
+					username = scan.nextLine();
+					System.out.println("Please enter a password: ");
+					password = scan.nextLine();
 					try {
-						u = uServ.signIn(l.getUsername(), l.getPassword());
+						u = uServ.signIn(username, password);
 						System.out.println("Welcome " + u.getFirstName());
 						loggedIn = true;
 						customer = true;
@@ -57,7 +65,16 @@ public class Main {
 					}
 					break;
 				case "create":
-					u = uServ.grabInfo();
+					// u = uServ.grabInfo();
+					System.out.print("Please enter you first name: ");
+					String first = scan.nextLine();
+					System.out.println("Please enter your last name: ");
+					String last = scan.nextLine();
+					System.out.println("Please enter your email: ");
+					String email = scan.nextLine();
+					System.out.println("Please enter a password: ");
+					password = scan.nextLine();
+					u = new User(first, last, email, password);
 					try {
 						u = uServ.signUp(u.getFirstName(), u.getLastName(), u.getEmail(), u.getPassword());
 						System.out.println("You may now log in with the username: " + u.getUsername());
@@ -78,9 +95,12 @@ public class Main {
 			case "employee":
 				System.out.println("Please Login");
 				// <-- minimize this -->
-				l = uServ.grabLogin();
+				System.out.println("Please enter your username: ");
+				username = scan.nextLine();
+				System.out.println("Please enter a password: ");
+				password = scan.nextLine();
 				try {
-					u = uServ.signIn(l.getUsername(), l.getPassword());
+					u = uServ.signIn(username, password);
 					System.out.println("Welcome " + u.getFirstName());
 					loggedIn = true;
 					employee = true;
@@ -96,9 +116,12 @@ public class Main {
 			case "manager":
 				System.out.println("Please Login");
 				// managerservices.login
-				l = uServ.grabLogin();
+				System.out.println("Please enter your username: ");
+				username = scan.nextLine();
+				System.out.println("Please enter a password: ");
+				password = scan.nextLine();
 				try {
-					u = uServ.signIn(l.getUsername(), l.getPassword());
+					u = uServ.signIn(username, password);
 					System.out.println("Welcome " + u.getFirstName());
 					loggedIn = true;
 					manager = true;
@@ -116,114 +139,172 @@ public class Main {
 			// might jump down here once logged in will have to fix while loop
 			System.out.println("we made it!");
 			if (customer) {
-				System.out.println("What would you like to do?");
-				System.out.println("- Request a (new) bank account?");
-				System.out.println("- (view) balance.");
-				System.out.println("- (manage) funds.");
-				System.out.println("- (transfer) funds.");
-				System.out.println("- (accept) money.");
-				//Scanner scan2 = new Scanner(System.in);
-				//String test = scan2.next();
-				//System.out.println(test);
-				//scan.nextLine();
+				do {
+					uServ.printMenuCustomer();
+					input = scan.nextLine();
+					// System.out.println(input);
+					switch (input.toLowerCase()) {
+					case "new":
+						// account
+						System.out.println("hit1");
+						try {
+							System.out.println("How much money would you like to deposit to start your account?");
+							int balance = scan.nextInt();
+							Account a = new Account(balance, u.getAccKey());
+							// uServ.addAccount(u, a);
+							/*
+							 * fix all account issues use u.getAccKey make that a primary key also create
+							 * the sql statement n other stuff also create the stuff for the aDao
+							 * 
+							 */
+							aServ.addAccount(a);
+						} catch (Exception e) {
+							System.out.println("COME ON HIT ME!!! BET YOU CANT!ln141");
+							e.printStackTrace();
+						}
+
+						break;
+					case "view":
+
+						try {
+							if (aDao.getAccountbyId(u.getAccKey()) != null) {
+								// List<Account> accounts = u.getAccounts();
+								// accounts.toString();
+								Account temp = aDao.getAccountbyId(u.getAccKey());
+								System.out.println("AccId: " + temp.getAccId() + " Balance: " + temp.getBalance());
+
+							} else {
+								System.out.println("No accounts found for this user account!");
+								System.out.println("Please logout and try another account or create a new account!");
+							}
+						} catch (Exception e) {
+							System.out.println("COME ON HIT ME!!! BET YOU CANT!ln155");
+							e.printStackTrace();
+						}
+
+						break;
+					case "manage":
+						System.out.println("Would you like to (deposit) or (withdraw) money?");
+						input = scan.nextLine();
+						switch (input.toLowerCase()) {
+						case "deposit":
+							try {
+								System.out.println("What is the account ID you would like to deposit in?");
+								int accountID = scan.nextInt();
+								Account a = aDao.getAccountbyId(accountID);
+								System.out.println("How much do u want to deposit?");
+								double depositAmount = scan.nextDouble();
+								System.out.println("AccId: " + a.getAccId() + " Balance: " + a.getBalance()
+										+ " Accountnum" + a.getAccountNumber());
+								double temp = a.getBalance() + depositAmount;
+								a.setBalance(temp);
+								aDao.depositUserAmount(a);
+
+							} catch (Exception e) {
+								System.out.println("COME ON HIT ME!!! BET YOU CANT!");
+								e.printStackTrace();
+							}
+							break;
+						case "withdraw":
+							try {
+								System.out.println("What is the account ID you would like to withdraw from?");
+								int accountID = scan.nextInt();
+								Account a = aDao.getAccountbyId(accountID);
+								System.out.println("How much you want from ur account?");
+								double withdrawAmount = scan.nextDouble();
+								System.out.println("AccId: " + a.getAccId() + " Balance: " + a.getBalance()
+										+ " Accountnum" + a.getAccountNumber());
+								if (a.getBalance() >= withdrawAmount) {
+									double temp = a.getBalance() - withdrawAmount;
+									a.setBalance(temp);
+									aDao.withdrawUserAmount(a);
+								} else {
+									System.out.println(
+											"sorry but money must come from somewhere and u dont have enough :(");
+									break;
+								}
+							} catch (Exception e) {
+								System.out.println("shouldn't be hard to hit this one");
+								e.printStackTrace();
+							}
+							break;
+						}
+					case "transfer":
+						try {
+							System.out.println("What is the account ID of the account you want to deposit into?");
+							int recievingAccount = scan.nextInt();
+							System.out.println("what is the account ID of the account you are transfering from?");
+							int sendingAccount = scan.nextInt();
+							System.out.println("How much we transfering?");
+							double transferAmount = scan.nextDouble();
+							Account recieve = aDao.getAccountbyId(recievingAccount);
+							Account sender = aDao.getAccountbyId(sendingAccount);
+							if (sender.getBalance() >= transferAmount) {
+								recieve.setBalance((recieve.getBalance() + transferAmount));
+								sender.setBalance((sender.getBalance() - transferAmount));
+								aDao.withdrawUserAmount(sender);
+								aDao.depositUserAmount(recieve);
+								aDao.recordTransaction(sender, recieve, transferAmount);
+							} else {
+								System.out.println("homie u poor... money aint free try again");
+							}
+						} catch (Exception e) {
+							System.out.println("COME ON HIT ME!!! transfer case");
+							e.printStackTrace();
+						}
+						break;
+					}
+				} while (input != "quit");
+			}
+			if (employee) {
+				do {
+					// i can approve or reject accounts
+					// view customers bank acocunts
+					uServ.printMenuEmployee();
+					input = scan.nextLine();
+					// System.out.println(input);
+					switch (input.toLowerCase()) {
+					case "viewt":
+						try {
+							aDao.viewAllTransactions();
+						} catch (Exception e) {
+							System.out.println("Honestly no idea how u hit this...impressive");
+							e.printStackTrace();
+						}
+						break;
+					case "viewc":
+						try {
+							uDao.viewAllUsers();
+						} catch (Exception e) {
+							System.out.println("Honestly no idea how u hit this either...");
+							e.printStackTrace();
+						}
+						break;
+					case "viewa":
+						try {
+							aDao.viewAllAccounts();
+						}catch(Exception e) {
+							System.out.println("Honestly no idea how u hit this either...");
+							e.printStackTrace();
+						}
+						break;
+					case "approve":
+						System.out.println("Would you like to approve the current accounts?(yes)/(no)");
+						input = scan.nextLine();
+						if(input.equals("yes")) {
+							System.out.println("Approving outstanding unapproved accounts.");
+						}
+						
+					break;
+					}
+					
+					// view all transactions
+				} while (input != "quit");
+			}
+			if (manager) {
 				do {
 					
-						input = scan.nextLine();
-						System.out.println(input);
-			
-						switch (input.toLowerCase()) {
-						case "new":
-							// account
-							System.out.println("hit1");
-							try {
-								System.out.println("How much money would you like to deposit to start your account?");
-								int balance = scan.nextInt();
-								Account a = new Account(balance, u.getAccKey());
-								uServ.addAccount(u, a);
-								/*
-								 * fix all account issues use u.getAccKey make that a primary key also create
-								 * the sql statement n other stuff also create the stuff for the aDao
-								 * 
-								 */
-								aServ.addAccount(a);
-							} catch (Exception e) {
-								System.out.println("COME ON HIT ME!!! BET YOU CANT!ln141");
-								e.printStackTrace();
-							}
-
-							break;
-						case "view":
-
-							try {
-								if (u.getAccounts() != null) {
-									List<Account> accounts = u.getAccounts();
-									accounts.toString();
-								} else {
-									System.out.println("No accounts found for this user account!");
-									System.out
-											.println("Please logout and try another account or create a new account!");
-								}
-							} catch (Exception e) {
-								System.out.println("COME ON HIT ME!!! BET YOU CANT!ln155");
-								e.printStackTrace();
-							}
-
-							break;
-						case "manage":
-							System.out.println("Would you like to (deposit) or (withdraw) money?");
-							input = scan.nextLine();
-							switch (input.toLowerCase()) {
-							case "deposit":
-								try {
-									System.out.println("Which acc # would you like to deposit in?");
-									List<Account> accounts = u.getAccounts();
-									for (Account a : accounts) {
-										System.out.println(
-												"Account ID: (" + a.getAccId() + ") Balance: " + a.getBalance());
-									}
-									int accountID = scan.nextInt();
-									Account a = aDao.getAccountbyId(accountID);
-									System.out.println("How much do u want to deposit?");
-									double depositAmount = scan.nextDouble();
-									a.setBalance((a.getBalance() + depositAmount));
-									aDao.depositUserAmount(a);
-
-								} catch (Exception e) {
-									System.out.println("COME ON HIT ME!!! BET YOU CANT!");
-									e.printStackTrace();
-								}
-							}
-
-							/*
-							 * break; case "transfer": break; case "accept": break; default:
-							 * System.out.println("hit default 192"); break; }
-							 */
-							// request new bank account
-							// view balance
-							// withdrawal or deposit funds
-							// check for negative funds
-							// transfer funds
-							// check if possible or if create negative
-							// accept money from another account
-
-						}
-
-						if (employee) {
-							while (loggedIn) {
-								// i can approve or reject accounts
-								// view customers bank acocunts
-								// view all transactions
-
-							}
-						}
-						if (manager) {
-							while (loggedIn) {
-
-							}
-						}
-					
-
-				} while (input != "quit");
+				}while(input != "quit");
 			}
 		}
 	}

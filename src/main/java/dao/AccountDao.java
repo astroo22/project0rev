@@ -12,4 +12,7 @@ public interface AccountDao {
 	public void addAmount(Account add);
 	public Account vewAccount(int account_id);
 	public void addAccount(Account a);
+	public void recordTransaction(Account sender, Account reciever, double transferAmount);
+	public void viewAllTransactions();
+	public void viewAllAccounts();
 }

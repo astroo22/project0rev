@@ -158,6 +158,47 @@ public class UserDaoDB implements UserDao{
 		}
 		
 	}*/
+		// TODO Auto-generated method stub
+		/*try {
+			Connection con = conUtil.getConnection();
+			String sql = "SELECT * FROM transactions";
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery(sql);
+			while(rs.next()) {
+				t.setId(rs.getInt(1));
+				t.setSendingAccId(rs.getInt(2));
+				t.setRecievingAccId(rs.getInt(3));
+				t.setTransferAmount(rs.getInt(4));
+				System.out.println("Transaction ID: " + t.getId() + " Sending Acc: " + t.getSendingAccId() + " Recieving acc: " + t.getRecievingAccId() + " Transfer Amount: "+ t.getTransferAmount());
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}*/
+		
+		
+	
+	public void viewAllUsers() {
+		// TODO Auto-generated method stub
+		User u = new User();
+		try {
+			Connection con = conUtil.getConnection();
+			String sql = "SELECT * FROM users";
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery(sql);
+			while(rs.next()) {
+				u.setAccKey(rs.getInt(1));
+				u.setFirstName(rs.getString(2));
+				u.setLastName(rs.getString(3));
+				u.setEmail(rs.getString(4));
+				u.setUsername(rs.getString(5));
+				u.setPassword(rs.getString(6));
+				System.out.println("Username: " + u.getUsername() + " First Name: "+ u.getFirstName() + " Last Name:"+ u.getLastName() + " Email: " + u.getEmail());
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	
 }

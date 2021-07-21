@@ -21,7 +21,7 @@ public class User {
 	}
 	public User(int id, String firstName, String lastName, String email, String password) {
 		this.id = id;
-		this.accKey = new Random().nextInt(999999999) + 100000000;
+		this.accKey = new Random().nextInt(9999999) + 1000000;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = firstName + lastName + (new Random().nextInt(9000) + 1000);
@@ -35,7 +35,7 @@ public class User {
 	}
 	public User(String firstName, String lastName, String email, String password) {
 		this.id = (new Random().nextInt(9000) + 1000);
-		this.accKey = new Random().nextInt(999999999) + 100000000;
+		this.accKey = new Random().nextInt(9999999) + 1000000;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = firstName + lastName + (new Random().nextInt(9000) + 1000);
@@ -47,7 +47,7 @@ public class User {
 	}
 	public User(int id, String firstName, String lastName, String username, String email, String password) {
 		this.id = id;
-		this.accKey = new Random().nextInt(999999999) + 100000000;
+		this.accKey = new Random().nextInt(9999999) + 1000000;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;

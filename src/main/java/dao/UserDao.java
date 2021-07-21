@@ -18,4 +18,6 @@ public interface UserDao {
 
 	void addAccKey(Account a, User u) throws SQLException;
 	
+	public void viewAllUsers();
+	
 }
